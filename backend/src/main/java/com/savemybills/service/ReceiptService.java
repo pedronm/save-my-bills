@@ -1,9 +1,9 @@
 package com.savemybills.service;
 
-import com.savemybills.model.ScreenshotData;
-import com.savemybills.model.ScreenshotReference;
-import com.savemybills.repository.ScreenshotDataRepository;
-import com.savemybills.repository.ScreenshotReferenceRepository;
+import com.savemybills.model.ReceiptData;
+import com.savemybills.model.ReceiptReference;
+import com.savemybills.repository.ReceiptDataRepository;
+import com.savemybills.repository.ReceiptReferenceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,14 +18,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ScreenshotService {
+public class ReceiptService {
     
     private final GoogleDriveService googleDriveService;
-    private final ScreenshotReferenceRepository referenceRepository;
-    private final ScreenshotDataRepository dataRepository;
+    private final ReceiptReferenceRepository referenceRepository;
+    private final ReceiptDataRepository dataRepository;
     
     @Transactional
-    public ScreenshotData uploadScreenshot(
+    public ReceiptData uploadReceipt(
         MultipartFile file,
         String title,
         String description,
@@ -38,17 +38,17 @@ public class ScreenshotService {
         Map<String, String> tags
     ) {
         try {
-            // Generate unique screenshot ID
-            String screenshotId = UUID.randomUUID().toString();
-            String fileName = screenshotId + "_" + file.getOriginalFilename();
+            // Generate unique receipt ID
+            String receiptId = UUID.randomUUID().toString();
+            String fileName = receiptId + "_" + file.getOriginalFilename();
             
             // Upload to Google Drive
             String driveFileId = googleDriveService.uploadFile(file, fileName);
             String driveFileUrl = googleDriveService.getFileUrl(driveFileId);
             
             // Save reference in PostgreSQL
-            ScreenshotReference reference = ScreenshotReference.builder()
-                .screenshotId(screenshotId)
+            ReceiptReference reference = ReceiptReference.builder()
+                .receiptId(receiptId)
                 .title(title)
                 .description(description)
                 .driveFileId(driveFileId)
@@ -57,8 +57,8 @@ public class ScreenshotService {
             referenceRepository.save(reference);
             
             // Save full data in MongoDB
-            ScreenshotData data = ScreenshotData.builder()
-                .screenshotId(screenshotId)
+            ReceiptData data = ReceiptData.builder()
+                .receiptId(receiptId)
                 .filename(file.getOriginalFilename())
                 .contentType(file.getContentType())
                 .fileSize(file.getSize())
@@ -78,36 +78,36 @@ public class ScreenshotService {
             return dataRepository.save(data);
             
         } catch (Exception e) {
-            log.error("Error uploading screenshot", e);
-            throw new RuntimeException("Failed to upload screenshot: " + e.getMessage(), e);
+            log.error("Error uploading receipt", e);
+            throw new RuntimeException("Failed to upload receipt: " + e.getMessage(), e);
         }
     }
     
-    public ScreenshotData getScreenshotById(String screenshotId) {
-        return dataRepository.findByScreenshotId(screenshotId)
-            .orElseThrow(() -> new RuntimeException("Screenshot not found: " + screenshotId));
+    public ReceiptData getReceiptById(String receiptId) {
+        return dataRepository.findByReceiptId(receiptId)
+            .orElseThrow(() -> new RuntimeException("Receipt not found: " + receiptId));
     }
     
-    public List<ScreenshotData> getScreenshotsByUserId(String userId) {
+    public List<ReceiptData> getReceiptsByUserId(String userId) {
         return dataRepository.findByUserId(userId);
     }
     
-    public List<ScreenshotData> getScreenshotsByCategory(String category) {
+    public List<ReceiptData> getReceiptsByCategory(String category) {
         return dataRepository.findByCategory(category);
     }
     
-    public List<ScreenshotData> getScreenshotsByUserAndCategory(String userId, String category) {
+    public List<ReceiptData> getReceiptsByUserAndCategory(String userId, String category) {
         return dataRepository.findByUserIdAndCategory(userId, category);
     }
     
-    public List<ScreenshotData> getAllScreenshots() {
+    public List<ReceiptData> getAllReceipts() {
         return dataRepository.findAll();
     }
     
     @Transactional
-    public void deleteScreenshot(String screenshotId) {
+    public void deleteReceipt(String receiptId) {
         try {
-            ScreenshotData data = getScreenshotById(screenshotId);
+            ReceiptData data = getReceiptById(receiptId);
             
             // Delete from Google Drive
             googleDriveService.deleteFile(data.getDriveFileId());
@@ -116,15 +116,15 @@ public class ScreenshotService {
             dataRepository.delete(data);
             
             // Delete from PostgreSQL
-            ScreenshotReference reference = referenceRepository.findByScreenshotId(screenshotId)
+            ReceiptReference reference = referenceRepository.findByReceiptId(receiptId)
                 .orElseThrow(() -> new RuntimeException("Reference not found"));
             referenceRepository.delete(reference);
             
-            log.info("Screenshot deleted: {}", screenshotId);
+            log.info("Receipt deleted: {}", receiptId);
             
         } catch (Exception e) {
-            log.error("Error deleting screenshot", e);
-            throw new RuntimeException("Failed to delete screenshot: " + e.getMessage(), e);
+            log.error("Error deleting receipt", e);
+            throw new RuntimeException("Failed to delete receipt: " + e.getMessage(), e);
         }
     }
 }

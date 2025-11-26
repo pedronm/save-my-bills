@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../models/screenshot.dart';
+import '../models/receipt.dart';
 import '../services/graphql_service.dart';
 import '../services/database_service.dart';
 import 'package:intl/intl.dart';
 
-class ScreenshotDetailScreen extends StatelessWidget {
-  final Screenshot screenshot;
+class ReceiptDetailScreen extends StatelessWidget {
+  final Receipt receipt;
 
-  const ScreenshotDetailScreen({super.key, required this.screenshot});
+  const ReceiptDetailScreen({super.key, required this.receipt});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ScreenshotDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Screenshot Details'),
+        title: const Text('Receipt Details'),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
@@ -44,14 +44,14 @@ class ScreenshotDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const Divider(),
-                    _buildInfoRow('Filename', screenshot.filename),
-                    _buildInfoRow('Screenshot ID', screenshot.screenshotId),
-                    if (screenshot.contentType != null)
-                      _buildInfoRow('Content Type', screenshot.contentType!),
-                    if (screenshot.fileSize != null)
+                    _buildInfoRow('Filename', receipt.filename),
+                    _buildInfoRow('Receipt ID', receipt.receiptId),
+                    if (receipt.contentType != null)
+                      _buildInfoRow('Content Type', receipt.contentType!),
+                    if (receipt.fileSize != null)
                       _buildInfoRow(
                         'File Size',
-                        '${(screenshot.fileSize! / 1024).toStringAsFixed(2)} KB',
+                        '${(receipt.fileSize! / 1024).toStringAsFixed(2)} KB',
                       ),
                   ],
                 ),
@@ -61,9 +61,9 @@ class ScreenshotDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Bill information
-            if (screenshot.vendor != null ||
-                screenshot.amount != null ||
-                screenshot.category != null)
+            if (receipt.vendor != null ||
+                receipt.amount != null ||
+                receipt.category != null)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -78,19 +78,19 @@ class ScreenshotDetailScreen extends StatelessWidget {
                         ),
                       ),
                       const Divider(),
-                      if (screenshot.vendor != null)
-                        _buildInfoRow('Vendor', screenshot.vendor!),
-                      if (screenshot.amount != null)
+                      if (receipt.vendor != null)
+                        _buildInfoRow('Vendor', receipt.vendor!),
+                      if (receipt.amount != null)
                         _buildInfoRow(
                           'Amount',
-                          '${screenshot.currency ?? 'USD'} ${screenshot.amount!.toStringAsFixed(2)}',
+                          '${receipt.currency ?? 'USD'} ${receipt.amount!.toStringAsFixed(2)}',
                         ),
-                      if (screenshot.category != null)
-                        _buildInfoRow('Category', screenshot.category!),
-                      if (screenshot.billDate != null)
+                      if (receipt.category != null)
+                        _buildInfoRow('Category', receipt.category!),
+                      if (receipt.billDate != null)
                         _buildInfoRow(
                           'Bill Date',
-                          dateFormat.format(screenshot.billDate!),
+                          dateFormat.format(receipt.billDate!),
                         ),
                     ],
                   ),
@@ -116,12 +116,12 @@ class ScreenshotDetailScreen extends StatelessWidget {
                     const Divider(),
                     _buildInfoRow(
                       'Uploaded',
-                      dateFormat.format(screenshot.uploadedAt),
+                      dateFormat.format(receipt.uploadedAt),
                     ),
-                    if (screenshot.lastAccessedAt != null)
+                    if (receipt.lastAccessedAt != null)
                       _buildInfoRow(
                         'Last Accessed',
-                        dateFormat.format(screenshot.lastAccessedAt!),
+                        dateFormat.format(receipt.lastAccessedAt!),
                       ),
                   ],
                 ),
@@ -131,7 +131,7 @@ class ScreenshotDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Google Drive link
-            if (screenshot.driveFileUrl != null)
+            if (receipt.driveFileUrl != null)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -146,14 +146,14 @@ class ScreenshotDetailScreen extends StatelessWidget {
                         ),
                       ),
                       const Divider(),
-                      _buildInfoRow('Drive File ID', screenshot.driveFileId),
+                      _buildInfoRow('Drive File ID', receipt.driveFileId),
                       const SizedBox(height: 8),
                       ElevatedButton.icon(
                         onPressed: () {
                           // In a real app, you would open the URL
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('URL: ${screenshot.driveFileUrl}'),
+                              content: Text('URL: ${receipt.driveFileUrl}'),
                             ),
                           );
                         },
@@ -195,9 +195,9 @@ class ScreenshotDetailScreen extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Screenshot'),
+        title: const Text('Delete Receipt'),
         content: const Text(
-          'Are you sure you want to delete this screenshot? This will remove it from both cloud and local storage.',
+          'Are you sure you want to delete this receipt? This will remove it from both cloud and local storage.',
         ),
         actions: [
           TextButton(
@@ -214,19 +214,19 @@ class ScreenshotDetailScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      _deleteScreenshot(context);
+      _deleteReceipt(context);
     }
   }
 
-  Future<void> _deleteScreenshot(BuildContext context) async {
+  Future<void> _deleteReceipt(BuildContext context) async {
     final client = GraphQLProvider.of(context).value;
 
     try {
       final result = await client.mutate(
         MutationOptions(
-          document: gql(GraphQLService.deleteScreenshotMutation),
+          document: gql(GraphQLService.deleteReceiptMutation),
           variables: {
-            'screenshotId': screenshot.screenshotId,
+            'receiptId': receipt.receiptId,
           },
         ),
       );
@@ -236,12 +236,12 @@ class ScreenshotDetailScreen extends StatelessWidget {
       }
 
       // Also delete from local database
-      await DatabaseService.instance.deleteScreenshot(screenshot.screenshotId);
+      await DatabaseService.instance.deleteReceipt(receipt.receiptId);
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Screenshot deleted successfully'),
+            content: Text('Receipt deleted successfully'),
             backgroundColor: Colors.green,
           ),
         );

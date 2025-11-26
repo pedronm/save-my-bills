@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 class UploadService {
-  static const String baseUrl = 'http://localhost:8080/api/screenshots';
+  static const String baseUrl = 'http://localhost:8080/api/receipts';
 
-  static Future<Map<String, dynamic>> uploadScreenshot({
+  static Future<Map<String, dynamic>> uploadReceipt({
     required File file,
     required String title,
     String? description,
@@ -54,10 +54,10 @@ class UploadService {
       if (response.statusCode == 201) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw Exception('Failed to upload screenshot: ${response.statusCode}');
+        throw Exception('Failed to upload receipt: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error uploading screenshot: $e');
+      throw Exception('Error uploading receipt: $e');
     }
   }
 }

@@ -1,7 +1,7 @@
 package com.savemybills.controller;
 
-import com.savemybills.model.ScreenshotData;
-import com.savemybills.service.ScreenshotService;
+import com.savemybills.model.ReceiptData;
+import com.savemybills.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,15 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/screenshots")
+@RequestMapping("/api/receipts")
 @RequiredArgsConstructor
 @Slf4j
-public class ScreenshotController {
+public class ReceiptController {
     
-    private final ScreenshotService screenshotService;
+    private final ReceiptService receiptService;
     
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadScreenshot(
+    public ResponseEntity<Map<String, Object>> uploadReceipt(
         @RequestParam("file") MultipartFile file,
         @RequestParam("title") String title,
         @RequestParam(value = "description", required = false) String description,
@@ -36,22 +36,22 @@ public class ScreenshotController {
         @RequestParam(value = "tags", required = false) Map<String, String> tags
     ) {
         try {
-            log.info("Uploading screenshot: {}", file.getOriginalFilename());
+            log.info("Uploading receipt: {}", file.getOriginalFilename());
             
-            ScreenshotData data = screenshotService.uploadScreenshot(
+            ReceiptData data = receiptService.uploadReceipt(
                 file, title, description, userId, category, amount, currency, billDate, vendor, tags
             );
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("screenshotId", data.getScreenshotId());
+            response.put("receiptId", data.getReceiptId());
             response.put("driveFileUrl", data.getDriveFileUrl());
             response.put("uploadedAt", data.getUploadedAt());
             
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
             
         } catch (Exception e) {
-            log.error("Error uploading screenshot", e);
+            log.error("Error uploading receipt", e);
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("error", e.getMessage());

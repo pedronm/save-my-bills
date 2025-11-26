@@ -10,12 +10,12 @@ class GraphQLService {
     ),
   );
 
-  // Query to get all screenshots
-  static const String getAllScreenshotsQuery = r'''
-    query GetAllScreenshots {
-      screenshots {
+  // Query to get all receipts
+  static const String getAllReceiptsQuery = r'''
+    query GetAllReceipts {
+      receipts {
         id
-        screenshotId
+        receiptId
         filename
         contentType
         fileSize
@@ -33,12 +33,12 @@ class GraphQLService {
     }
   ''';
 
-  // Query to get screenshots by user
-  static const String getScreenshotsByUserQuery = r'''
-    query GetScreenshotsByUser($userId: String!) {
-      screenshotsByUser(userId: $userId) {
+  // Query to get receipts by user
+  static const String getReceiptsByUserQuery = r'''
+    query GetReceiptsByUser($userId: String!) {
+      receiptsByUser(userId: $userId) {
         id
-        screenshotId
+        receiptId
         filename
         contentType
         fileSize
@@ -56,12 +56,12 @@ class GraphQLService {
     }
   ''';
 
-  // Query to get a single screenshot
-  static const String getScreenshotQuery = r'''
-    query GetScreenshot($screenshotId: String!) {
-      screenshot(screenshotId: $screenshotId) {
+  // Query to get a single receipt
+  static const String getReceiptQuery = r'''
+    query GetReceipt($receiptId: String!) {
+      receipt(receiptId: $receiptId) {
         id
-        screenshotId
+        receiptId
         filename
         contentType
         fileSize
@@ -79,10 +79,10 @@ class GraphQLService {
     }
   ''';
 
-  // Mutation to delete a screenshot
-  static const String deleteScreenshotMutation = r'''
-    mutation DeleteScreenshot($screenshotId: String!) {
-      deleteScreenshot(screenshotId: $screenshotId)
+  // Mutation to delete a receipt
+  static const String deleteReceiptMutation = r'''
+    mutation DeleteReceipt($receiptId: String!) {
+      deleteReceipt(receiptId: $receiptId)
     }
   ''';
 }

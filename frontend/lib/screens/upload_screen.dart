@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/upload_service.dart';
 import '../services/database_service.dart';
-import '../models/screenshot.dart';
+import '../models/receipt.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
@@ -46,7 +46,7 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
-  Future<void> _uploadScreenshot() async {
+  Future<void> _uploadReceipt() async {
     if (!_formKey.currentState!.validate() || _imageFile == null) {
       _showError('Please fill in all required fields and select an image');
       return;
@@ -57,7 +57,7 @@ class _UploadScreenState extends State<UploadScreen> {
     });
 
     try {
-      final result = await UploadService.uploadScreenshot(
+      final result = await UploadService.uploadReceipt(
         file: _imageFile!,
         title: _titleController.text,
         description: _descriptionController.text.isEmpty 
@@ -81,10 +81,10 @@ class _UploadScreenState extends State<UploadScreen> {
 
       if (result['success'] == true) {
         // Save to local database
-        final screenshot = Screenshot(
-          screenshotId: result['screenshotId'],
+        final receipt = Receipt(
+          receiptId: result['receiptId'],
           filename: _imageFile!.path.split('/').last,
-          driveFileId: result['screenshotId'],
+          driveFileId: result['receiptId'],
           driveFileUrl: result['driveFileUrl'],
           uploadedAt: DateTime.now(),
           userId: _userIdController.text.isEmpty ? null : _userIdController.text,
@@ -95,12 +95,12 @@ class _UploadScreenState extends State<UploadScreen> {
           vendor: _vendorController.text.isEmpty ? null : _vendorController.text,
         );
 
-        await DatabaseService.instance.insertScreenshot(screenshot);
+        await DatabaseService.instance.insertReceipt(receipt);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Screenshot uploaded successfully!'),
+              content: Text('Receipt uploaded successfully!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -144,7 +144,7 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload Screenshot'),
+        title: const Text('Upload Receipt'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -310,13 +310,13 @@ class _UploadScreenState extends State<UploadScreen> {
 
               // Upload button
               ElevatedButton(
-                onPressed: _isUploading ? null : _uploadScreenshot,
+                onPressed: _isUploading ? null : _uploadReceipt,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16),
                 ),
                 child: _isUploading
                     ? const CircularProgressIndicator()
-                    : const Text('Upload Screenshot', style: TextStyle(fontSize: 16)),
+                    : const Text('Upload Receipt', style: TextStyle(fontSize: 16)),
               ),
             ],
           ),

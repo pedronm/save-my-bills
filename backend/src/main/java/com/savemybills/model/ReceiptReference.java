@@ -9,19 +9,19 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "screenshot_references")
+@Table(name = "receipt_references")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScreenshotReference {
+public class ReceiptReference {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(nullable = false, unique = true)
-    private String screenshotId;
+    private String receiptId;
     
     @Column(nullable = false)
     private String title;

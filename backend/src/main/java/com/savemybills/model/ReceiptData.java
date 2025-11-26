@@ -10,17 +10,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Document(collection = "screenshots")
+@Document(collection = "receipts")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScreenshotData {
+public class ReceiptData {
     
     @Id
     private String id;
     
-    private String screenshotId;
+    private String receiptId;
     
     private String filename;
     

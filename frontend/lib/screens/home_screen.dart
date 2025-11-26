@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../models/screenshot.dart';
+import '../models/receipt.dart';
 import '../services/graphql_service.dart';
 import '../services/database_service.dart';
 import 'upload_screen.dart';
-import 'screenshot_detail_screen.dart';
+import 'receipt_detail_screen.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,19 +15,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Screenshot> _localScreenshots = [];
+  List<Receipt> _localReceipts = [];
   bool _showLocalData = false;
 
   @override
   void initState() {
     super.initState();
-    _loadLocalScreenshots();
+    _loadLocalReceipts();
   }
 
-  Future<void> _loadLocalScreenshots() async {
-    final screenshots = await DatabaseService.instance.getAllScreenshots();
+  Future<void> _loadLocalReceipts() async {
+    final receipts = await DatabaseService.instance.getAllReceipts();
     setState(() {
-      _localScreenshots = screenshots;
+      _localReceipts = receipts;
     });
   }
 
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(builder: (context) => const UploadScreen()),
           );
-          _loadLocalScreenshots();
+          _loadLocalReceipts();
         },
         child: const Icon(Icons.add_a_photo),
       ),
@@ -63,19 +63,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLocalView() {
-    if (_localScreenshots.isEmpty) {
+    if (_localReceipts.isEmpty) {
       return const Center(
-        child: Text('No local screenshots found'),
+        child: Text('No local receipts found'),
       );
     }
 
     return RefreshIndicator(
-      onRefresh: _loadLocalScreenshots,
+      onRefresh: _loadLocalReceipts,
       child: ListView.builder(
-        itemCount: _localScreenshots.length,
+        itemCount: _localReceipts.length,
         itemBuilder: (context, index) {
-          final screenshot = _localScreenshots[index];
-          return _buildScreenshotTile(screenshot);
+          final receipt = _localReceipts[index];
+          return _buildReceiptTile(receipt);
         },
       ),
     );
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCloudView() {
     return Query(
       options: QueryOptions(
-        document: gql(GraphQLService.getAllScreenshotsQuery),
+        document: gql(GraphQLService.getAllReceiptsQuery),
         pollInterval: const Duration(seconds: 10),
       ),
       builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -110,18 +110,18 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final screenshots = result.data?['screenshots'] as List?;
+        final receipts = result.data?['receipts'] as List?;
 
-        if (screenshots == null || screenshots.isEmpty) {
+        if (receipts == null || receipts.isEmpty) {
           return const Center(
-            child: Text('No screenshots found'),
+            child: Text('No receipts found'),
           );
         }
 
         // Save to local database
-        for (var data in screenshots) {
-          final screenshot = Screenshot.fromJson(data);
-          DatabaseService.instance.insertScreenshot(screenshot);
+        for (var data in receipts) {
+          final receipt = Receipt.fromJson(data);
+          DatabaseService.instance.insertReceipt(receipt);
         }
 
         return RefreshIndicator(
@@ -129,10 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
             refetch?.call();
           },
           child: ListView.builder(
-            itemCount: screenshots.length,
+            itemCount: receipts.length,
             itemBuilder: (context, index) {
-              final screenshot = Screenshot.fromJson(screenshots[index]);
-              return _buildScreenshotTile(screenshot);
+              final receipt = Receipt.fromJson(receipts[index]);
+              return _buildReceiptTile(receipt);
             },
           ),
         );
@@ -140,29 +140,29 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildScreenshotTile(Screenshot screenshot) {
+  Widget _buildReceiptTile(Receipt receipt) {
     final dateFormat = DateFormat('MMM dd, yyyy HH:mm');
     
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
         leading: const Icon(Icons.receipt, size: 40),
-        title: Text(screenshot.filename),
+        title: Text(receipt.filename),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (screenshot.vendor != null) Text('Vendor: ${screenshot.vendor}'),
-            if (screenshot.amount != null)
-              Text('Amount: ${screenshot.currency ?? 'USD'} ${screenshot.amount!.toStringAsFixed(2)}'),
-            Text('Uploaded: ${dateFormat.format(screenshot.uploadedAt)}'),
+            if (receipt.vendor != null) Text('Vendor: ${receipt.vendor}'),
+            if (receipt.amount != null)
+              Text('Amount: ${receipt.currency ?? 'USD'} ${receipt.amount!.toStringAsFixed(2)}'),
+            Text('Uploaded: ${dateFormat.format(receipt.uploadedAt)}'),
           ],
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (screenshot.category != null)
+            if (receipt.category != null)
               Chip(
-                label: Text(screenshot.category!),
+                label: Text(receipt.category!),
                 backgroundColor: Colors.green.shade100,
               ),
             const SizedBox(width: 8),
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ScreenshotDetailScreen(screenshot: screenshot),
+              builder: (context) => ReceiptDetailScreen(receipt: receipt),
             ),
           );
         },

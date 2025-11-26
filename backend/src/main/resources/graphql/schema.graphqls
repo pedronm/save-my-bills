@@ -1,18 +1,18 @@
 type Query {
-    screenshot(screenshotId: String!): Screenshot
-    screenshots: [Screenshot!]!
-    screenshotsByUser(userId: String!): [Screenshot!]!
-    screenshotsByCategory(category: String!): [Screenshot!]!
-    screenshotsByUserAndCategory(userId: String!, category: String!): [Screenshot!]!
+    receipt(receiptId: String!): Receipt
+    receipts: [Receipt!]!
+    receiptsByUser(userId: String!): [Receipt!]!
+    receiptsByCategory(category: String!): [Receipt!]!
+    receiptsByUserAndCategory(userId: String!, category: String!): [Receipt!]!
 }
 
 type Mutation {
-    deleteScreenshot(screenshotId: String!): Boolean!
+    deleteReceipt(receiptId: String!): Boolean!
 }
 
-type Screenshot {
+type Receipt {
     id: ID!
-    screenshotId: String!
+    receiptId: String!
     filename: String!
     contentType: String
     fileSize: Float
@@ -34,9 +34,9 @@ type Tag {
     value: String!
 }
 
-type ScreenshotReference {
+type ReceiptReference {
     id: ID!
-    screenshotId: String!
+    receiptId: String!
     title: String!
     description: String
     driveFileId: String!

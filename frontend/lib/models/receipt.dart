@@ -1,6 +1,6 @@
-class Screenshot {
+class Receipt {
   final String? id;
-  final String screenshotId;
+  final String receiptId;
   final String filename;
   final String? contentType;
   final double? fileSize;
@@ -16,9 +16,9 @@ class Screenshot {
   final String? vendor;
   final Map<String, String>? tags;
 
-  Screenshot({
+  Receipt({
     this.id,
-    required this.screenshotId,
+    required this.receiptId,
     required this.filename,
     this.contentType,
     this.fileSize,
@@ -35,10 +35,10 @@ class Screenshot {
     this.tags,
   });
 
-  factory Screenshot.fromJson(Map<String, dynamic> json) {
-    return Screenshot(
+  factory Receipt.fromJson(Map<String, dynamic> json) {
+    return Receipt(
       id: json['id'],
-      screenshotId: json['screenshotId'],
+      receiptId: json['receiptId'],
       filename: json['filename'],
       contentType: json['contentType'],
       fileSize: json['fileSize']?.toDouble(),
@@ -65,7 +65,7 @@ class Screenshot {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'screenshotId': screenshotId,
+      'receiptId': receiptId,
       'filename': filename,
       'contentType': contentType,
       'fileSize': fileSize,
@@ -86,7 +86,7 @@ class Screenshot {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'screenshotId': screenshotId,
+      'receiptId': receiptId,
       'filename': filename,
       'contentType': contentType,
       'fileSize': fileSize,
@@ -104,7 +104,7 @@ class Screenshot {
     };
   }
 
-  factory Screenshot.fromMap(Map<String, dynamic> map) {
+  factory Receipt.fromMap(Map<String, dynamic> map) {
     Map<String, String>? tags;
     if (map['tags'] != null && map['tags'] is String) {
       // Parse tags string back to Map
@@ -126,9 +126,9 @@ class Screenshot {
       }
     }
     
-    return Screenshot(
+    return Receipt(
       id: map['id'],
-      screenshotId: map['screenshotId'],
+      receiptId: map['receiptId'],
       filename: map['filename'],
       contentType: map['contentType'],
       fileSize: map['fileSize']?.toDouble(),

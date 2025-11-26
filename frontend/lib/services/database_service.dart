@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../models/screenshot.dart';
+import '../models/receipt.dart';
 
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();
@@ -32,9 +32,9 @@ class DatabaseService {
     const realType = 'REAL';
 
     await db.execute('''
-      CREATE TABLE screenshots (
+      CREATE TABLE receipts (
         id $idType,
-        screenshotId $textType,
+        receiptId $textType,
         filename $textType,
         contentType $textTypeNullable,
         fileSize $realType,
@@ -49,94 +49,94 @@ class DatabaseService {
         billDate $textTypeNullable,
         vendor $textTypeNullable,
         tags $textTypeNullable,
-        UNIQUE(screenshotId)
+        UNIQUE(receiptId)
       )
     ''');
   }
 
-  // Insert a screenshot
-  Future<int> insertScreenshot(Screenshot screenshot) async {
+  // Insert a receipt
+  Future<int> insertReceipt(Receipt receipt) async {
     final db = await instance.database;
     return await db.insert(
-      'screenshots',
-      screenshot.toMap(),
+      'receipts',
+      receipt.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  // Get all screenshots
-  Future<List<Screenshot>> getAllScreenshots() async {
+  // Get all receipts
+  Future<List<Receipt>> getAllReceipts() async {
     final db = await instance.database;
     final result = await db.query(
-      'screenshots',
+      'receipts',
       orderBy: 'uploadedAt DESC',
     );
-    return result.map((map) => Screenshot.fromMap(map)).toList();
+    return result.map((map) => Receipt.fromMap(map)).toList();
   }
 
-  // Get screenshot by ID
-  Future<Screenshot?> getScreenshot(String screenshotId) async {
+  // Get receipt by ID
+  Future<Receipt?> getReceipt(String receiptId) async {
     final db = await instance.database;
     final result = await db.query(
-      'screenshots',
-      where: 'screenshotId = ?',
-      whereArgs: [screenshotId],
+      'receipts',
+      where: 'receiptId = ?',
+      whereArgs: [receiptId],
     );
     if (result.isNotEmpty) {
-      return Screenshot.fromMap(result.first);
+      return Receipt.fromMap(result.first);
     }
     return null;
   }
 
-  // Get screenshots by user
-  Future<List<Screenshot>> getScreenshotsByUser(String userId) async {
+  // Get receipts by user
+  Future<List<Receipt>> getReceiptsByUser(String userId) async {
     final db = await instance.database;
     final result = await db.query(
-      'screenshots',
+      'receipts',
       where: 'userId = ?',
       whereArgs: [userId],
       orderBy: 'uploadedAt DESC',
     );
-    return result.map((map) => Screenshot.fromMap(map)).toList();
+    return result.map((map) => Receipt.fromMap(map)).toList();
   }
 
-  // Get screenshots by category
-  Future<List<Screenshot>> getScreenshotsByCategory(String category) async {
+  // Get receipts by category
+  Future<List<Receipt>> getReceiptsByCategory(String category) async {
     final db = await instance.database;
     final result = await db.query(
-      'screenshots',
+      'receipts',
       where: 'category = ?',
       whereArgs: [category],
       orderBy: 'uploadedAt DESC',
     );
-    return result.map((map) => Screenshot.fromMap(map)).toList();
+    return result.map((map) => Receipt.fromMap(map)).toList();
   }
 
-  // Update a screenshot
-  Future<int> updateScreenshot(Screenshot screenshot) async {
+  // Update a receipt
+  Future<int> updateReceipt(Receipt receipt) async {
     final db = await instance.database;
     return await db.update(
-      'screenshots',
-      screenshot.toMap(),
-      where: 'screenshotId = ?',
-      whereArgs: [screenshot.screenshotId],
+      'receipts',
+      receipt.toMap(),
+      where: 'receiptId = ?',
+      whereArgs: [receipt.receiptId],
     );
   }
 
-  // Delete a screenshot
-  Future<int> deleteScreenshot(String screenshotId) async {
+  // Delete a receipt
+  Future<int> deleteReceipt(String receiptId) async {
     final db = await instance.database;
     return await db.delete(
-      'screenshots',
-      where: 'screenshotId = ?',
-      whereArgs: [screenshotId],
+      'receipts',
+      where: 'receiptId = ?',
+      whereArgs: [receiptId],
     );
   }
 
-  // Clear all screenshots
-  Future<int> clearAllScreenshots() async {
+  // Clear all receipts
+  Future<int> clearAllReceipts() async {
     final db = await instance.database;
-    return await db.delete('screenshots');
+    return await db.delete('receipts');
   }
 
   Future<void> close() async {
