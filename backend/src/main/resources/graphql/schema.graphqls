@@ -1,0 +1,45 @@
+type Query {
+    screenshot(screenshotId: String!): Screenshot
+    screenshots: [Screenshot!]!
+    screenshotsByUser(userId: String!): [Screenshot!]!
+    screenshotsByCategory(category: String!): [Screenshot!]!
+    screenshotsByUserAndCategory(userId: String!, category: String!): [Screenshot!]!
+}
+
+type Mutation {
+    deleteScreenshot(screenshotId: String!): Boolean!
+}
+
+type Screenshot {
+    id: ID!
+    screenshotId: String!
+    filename: String!
+    contentType: String
+    fileSize: Float
+    driveFileId: String!
+    driveFileUrl: String
+    uploadedAt: String!
+    lastAccessedAt: String
+    userId: String
+    category: String
+    amount: Float
+    currency: String
+    billDate: String
+    vendor: String
+    tags: [Tag!]
+}
+
+type Tag {
+    key: String!
+    value: String!
+}
+
+type ScreenshotReference {
+    id: ID!
+    screenshotId: String!
+    title: String!
+    description: String
+    driveFileId: String!
+    uploadedAt: String!
+    updatedAt: String
+}

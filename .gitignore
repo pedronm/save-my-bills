@@ -1,16 +1,8 @@
-# Compiled class file
+# Java Backend
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
 *.ctxt
-
-# Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -18,7 +10,60 @@
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Maven
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+
+# Spring Boot
+backend/HELP.md
+
+# Database credentials (NEVER commit)
+**/credentials.json
+**/*credentials*.json
+
+# Flutter/Dart
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/.pub-cache/
+frontend/.pub/
+frontend/build/
+frontend/ios/Flutter/Generated.xcconfig
+frontend/ios/Flutter/flutter_export_environment.sh
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/android/.gradle/
+frontend/android/captures/
+frontend/android/gradlew
+frontend/android/gradlew.bat
+frontend/android/local.properties
+frontend/android/**/GeneratedPluginRegistrant.java
+frontend/android/key.properties
+frontend/.metadata
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+
+# OS specific
+.DS_Store
+Thumbs.db
+*~
+
+# Docker volumes
+postgres-data/
+mongodb-data/
