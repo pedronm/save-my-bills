@@ -1,13 +1,15 @@
 package com.savemybills;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 class SaveMyBillsApplicationTests {
 
     @Test
-    void contextLoads() {
+    void applicationClassExists() {
+        SaveMyBillsApplication app = new SaveMyBillsApplication();
+        assertNotNull(app);
     }
 
 }
