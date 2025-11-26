@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 
 class UploadService {
   static const String baseUrl = 'http://localhost:8080/api/screenshots';

@@ -105,6 +105,27 @@ class Screenshot {
   }
 
   factory Screenshot.fromMap(Map<String, dynamic> map) {
+    Map<String, String>? tags;
+    if (map['tags'] != null && map['tags'] is String) {
+      // Parse tags string back to Map
+      try {
+        // Remove curly braces and split by comma
+        String tagsStr = map['tags'].toString().replaceAll('{', '').replaceAll('}', '');
+        if (tagsStr.isNotEmpty) {
+          tags = {};
+          for (var pair in tagsStr.split(',')) {
+            var parts = pair.trim().split(':');
+            if (parts.length == 2) {
+              tags[parts[0].trim()] = parts[1].trim();
+            }
+          }
+        }
+      } catch (e) {
+        // If parsing fails, leave tags as null
+        tags = null;
+      }
+    }
+    
     return Screenshot(
       id: map['id'],
       screenshotId: map['screenshotId'],
@@ -125,6 +146,7 @@ class Screenshot {
           ? DateTime.parse(map['billDate']) 
           : null,
       vendor: map['vendor'],
+      tags: tags,
     );
   }
 }

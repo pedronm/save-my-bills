@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 import 'services/graphql_service.dart';
 import 'services/database_service.dart';
 import 'screens/home_screen.dart';
