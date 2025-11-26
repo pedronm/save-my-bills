@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get the Save My Bills screenshot storage system up and running in minutes!
+Get the Save My Bills receipt storage system up and running in minutes!
 
 ## Prerequisites
 
@@ -46,8 +46,8 @@ Open browser to: `http://localhost:8080/graphiql`
 Try this query:
 ```graphql
 query {
-  screenshots {
-    screenshotId
+  receipts {
+    receiptId
     filename
   }
 }
@@ -84,7 +84,7 @@ Select your device when prompted.
 ### Test Backend Upload (cURL)
 
 ```bash
-curl -X POST http://localhost:8080/api/screenshots/upload \
+curl -X POST http://localhost:8080/api/receipts/upload \
   -F "file=@/path/to/image.jpg" \
   -F "title=Test Receipt" \
   -F "category=Food"
@@ -96,8 +96,8 @@ curl -X POST http://localhost:8080/api/screenshots/upload \
 2. Tap the camera button (bottom-right)
 3. Take a photo or select from gallery
 4. Fill in "Title" field
-5. Tap "Upload Screenshot"
-6. Go back to see your screenshot
+5. Tap "Upload Receipt"
+6. Go back to see your receipt
 
 ## Common Issues
 
@@ -168,7 +168,7 @@ curl -X POST http://localhost:8080/api/screenshots/upload \
 ✅ Backend running on port 8080  
 ✅ GraphiQL accessible at http://localhost:8080/graphiql  
 ✅ Flutter app running on device/emulator  
-✅ Can upload screenshot from app  
-✅ Can view screenshots in app  
+✅ Can upload receipt from app  
+✅ Can view receipts in app  
 
 Happy coding! 🚀

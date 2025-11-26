@@ -1,8 +1,8 @@
-# Project Summary: Save My Bills - Screenshot Storage System
+# Project Summary: Save My Bills - Receipt Storage System
 
 ## Overview
 
-This project implements a complete, production-ready system for storing and managing bill screenshots with cloud storage capabilities. The system consists of a Java Spring Boot backend with GraphQL API and a Flutter mobile application.
+This project implements a complete, production-ready system for storing and managing bill receipts with cloud storage capabilities. The system consists of a Java Spring Boot backend with GraphQL API and a Flutter mobile application.
 
 ## Architecture
 
@@ -31,12 +31,12 @@ This project implements a complete, production-ready system for storing and mana
 
 1. **REST API**
    - File upload endpoint with multipart form data
-   - Supports screenshots up to 50MB
+   - Supports receipts up to 50MB
    - Metadata extraction and storage
 
 2. **GraphQL API**
-   - Query screenshots by ID, user, category
-   - Delete screenshots
+   - Query receipts by ID, user, category
+   - Delete receipts
    - Real-time data access
 
 3. **Dual Database Architecture**
@@ -49,7 +49,7 @@ This project implements a complete, production-ready system for storing and mana
    - Configurable folder storage
 
 5. **Data Model**
-   - Screenshot reference (PostgreSQL)
+   - Receipt reference (PostgreSQL)
    - Complete metadata (MongoDB)
    - Automatic timestamps
    - Category and tagging support
@@ -57,7 +57,7 @@ This project implements a complete, production-ready system for storing and mana
 ### Frontend Features
 
 1. **Home Screen**
-   - View screenshots from cloud (GraphQL)
+   - View receipts from cloud (GraphQL)
    - Toggle between cloud and local data
    - Pull to refresh
    - Real-time synchronization
@@ -101,18 +101,18 @@ save-my-bills/
 │       │   ├── java/com/savemybills/
 │       │   │   ├── SaveMyBillsApplication.java
 │       │   │   ├── controller/
-│       │   │   │   └── ScreenshotController.java
+│       │   │   │   └── ReceiptController.java
 │       │   │   ├── graphql/
-│       │   │   │   └── ScreenshotResolver.java
+│       │   │   │   └── ReceiptResolver.java
 │       │   │   ├── model/
-│       │   │   │   ├── ScreenshotReference.java
-│       │   │   │   └── ScreenshotData.java
+│       │   │   │   ├── ReceiptReference.java
+│       │   │   │   └── ReceiptData.java
 │       │   │   ├── repository/
-│       │   │   │   ├── ScreenshotReferenceRepository.java
-│       │   │   │   └── ScreenshotDataRepository.java
+│       │   │   │   ├── ReceiptReferenceRepository.java
+│       │   │   │   └── ReceiptDataRepository.java
 │       │   │   └── service/
 │       │   │       ├── GoogleDriveService.java
-│       │   │       └── ScreenshotService.java
+│       │   │       └── ReceiptService.java
 │       │   └── resources/
 │       │       ├── application.yml
 │       │       └── graphql/
@@ -128,7 +128,7 @@ save-my-bills/
     └── lib/
         ├── main.dart
         ├── models/
-        │   └── screenshot.dart
+        │   └── receipt.dart
         ├── services/
         │   ├── graphql_service.dart
         │   ├── database_service.dart
@@ -136,17 +136,17 @@ save-my-bills/
         └── screens/
             ├── home_screen.dart
             ├── upload_screen.dart
-            └── screenshot_detail_screen.dart
+            └── receipt_detail_screen.dart
 ```
 
 ## Database Schemas
 
-### PostgreSQL (screenshot_references)
+### PostgreSQL (receipt_references)
 
 ```sql
-CREATE TABLE screenshot_references (
+CREATE TABLE receipt_references (
     id BIGSERIAL PRIMARY KEY,
-    screenshot_id VARCHAR(255) NOT NULL UNIQUE,
+    receipt_id VARCHAR(255) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(1000),
     drive_file_id VARCHAR(255) NOT NULL,
@@ -155,12 +155,12 @@ CREATE TABLE screenshot_references (
 );
 ```
 
-### MongoDB (screenshots)
+### MongoDB (receipts)
 
 ```json
 {
   "_id": "ObjectId",
-  "screenshotId": "uuid",
+  "receiptId": "uuid",
   "filename": "string",
   "contentType": "string",
   "fileSize": "number",
@@ -182,9 +182,9 @@ CREATE TABLE screenshot_references (
 ### SQLite (local frontend storage)
 
 ```sql
-CREATE TABLE screenshots (
+CREATE TABLE receipts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    screenshotId TEXT NOT NULL UNIQUE,
+    receiptId TEXT NOT NULL UNIQUE,
     filename TEXT NOT NULL,
     contentType TEXT,
     fileSize REAL,
@@ -206,10 +206,10 @@ CREATE TABLE screenshots (
 
 ### REST API
 
-**POST** `/api/screenshots/upload`
-- Upload a screenshot file
+**POST** `/api/receipts/upload`
+- Upload a receipt file
 - Accepts multipart/form-data
-- Returns screenshot ID and Google Drive URL
+- Returns receipt ID and Google Drive URL
 
 ### GraphQL API
 
@@ -217,14 +217,14 @@ CREATE TABLE screenshots (
 **GraphiQL:** `/graphiql`
 
 **Queries:**
-- `screenshot(screenshotId: String!): Screenshot`
-- `screenshots: [Screenshot!]!`
-- `screenshotsByUser(userId: String!): [Screenshot!]!`
-- `screenshotsByCategory(category: String!): [Screenshot!]!`
-- `screenshotsByUserAndCategory(userId: String!, category: String!): [Screenshot!]!`
+- `receipt(receiptId: String!): Receipt`
+- `receipts: [Receipt!]!`
+- `receiptsByUser(userId: String!): [Receipt!]!`
+- `receiptsByCategory(category: String!): [Receipt!]!`
+- `receiptsByUserAndCategory(userId: String!, category: String!): [Receipt!]!`
 
 **Mutations:**
-- `deleteScreenshot(screenshotId: String!): Boolean!`
+- `deleteReceipt(receiptId: String!): Boolean!`
 
 ## Setup Instructions
 

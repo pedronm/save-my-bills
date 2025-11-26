@@ -94,7 +94,7 @@ static const String _apiUrl = 'http://10.0.2.2:8080/graphql';
 
 Edit `lib/services/upload_service.dart`:
 ```dart
-static const String baseUrl = 'http://10.0.2.2:8080/api/screenshots';
+static const String baseUrl = 'http://10.0.2.2:8080/api/receipts';
 ```
 
 **Note:** `10.0.2.2` is the special IP address to reach the host machine from Android emulator.
@@ -108,7 +108,7 @@ static const String _apiUrl = 'http://localhost:8080/graphql';
 
 Edit `lib/services/upload_service.dart`:
 ```dart
-static const String baseUrl = 'http://localhost:8080/api/screenshots';
+static const String baseUrl = 'http://localhost:8080/api/receipts';
 ```
 
 ### For Physical Device
@@ -128,7 +128,7 @@ ipconfig
 Then update the files with your IP:
 ```dart
 static const String _apiUrl = 'http://192.168.1.XXX:8080/graphql';
-static const String baseUrl = 'http://192.168.1.XXX:8080/api/screenshots';
+static const String baseUrl = 'http://192.168.1.XXX:8080/api/receipts';
 ```
 
 ## Step 6: Run the App
@@ -170,13 +170,13 @@ Once the app is running:
 2. Tap the **camera button** in the bottom-right
 3. Try capturing or selecting an image
 4. Fill in the form and tap **Upload**
-5. Return to the home screen to see the uploaded screenshot
+5. Return to the home screen to see the uploaded receipt
 
 ## Features Overview
 
 ### Home Screen
-- **Cloud View**: Shows screenshots from backend (via GraphQL)
-- **Local View**: Shows cached screenshots from SQLite
+- **Cloud View**: Shows receipts from backend (via GraphQL)
+- **Local View**: Shows cached receipts from SQLite
 - **Toggle Icon**: Switch between cloud and local data
 - **Pull to Refresh**: Update data from server
 - **Tap Item**: View details
@@ -195,7 +195,7 @@ Once the app is running:
 - **Upload Button**: Send to backend
 
 ### Detail Screen
-- View complete screenshot information
+- View complete receipt information
 - File details
 - Bill information
 - Timestamps
@@ -372,7 +372,7 @@ frontend/
 ├── lib/
 │   ├── main.dart                 # App entry point
 │   ├── models/
-│   │   └── screenshot.dart       # Data model
+│   │   └── receipt.dart       # Data model
 │   ├── services/
 │   │   ├── graphql_service.dart  # GraphQL queries/mutations
 │   │   ├── database_service.dart # SQLite operations
@@ -380,7 +380,7 @@ frontend/
 │   └── screens/
 │       ├── home_screen.dart      # Main screen
 │       ├── upload_screen.dart    # Upload UI
-│       └── screenshot_detail_screen.dart
+│       └── receipt_detail_screen.dart
 ├── pubspec.yaml                   # Dependencies
 ├── android/                       # Android-specific code
 └── ios/                          # iOS-specific code
@@ -412,7 +412,7 @@ flutter build apk --split-per-abi --release
 flutter test
 
 # Run specific test file
-flutter test test/models/screenshot_test.dart
+flutter test test/models/receipt_test.dart
 ```
 
 ### Widget Tests

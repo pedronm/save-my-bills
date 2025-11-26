@@ -2,11 +2,11 @@
 
 ## REST API Endpoints
 
-### Upload Screenshot
+### Upload Receipt
 
-**Endpoint:** `POST /api/screenshots/upload`
+**Endpoint:** `POST /api/receipts/upload`
 
-**Description:** Upload a bill screenshot to the system. The file will be stored in Google Drive, with metadata saved in both PostgreSQL and MongoDB.
+**Description:** Upload a bill receipt to the system. The file will be stored in Google Drive, with metadata saved in both PostgreSQL and MongoDB.
 
 **Request:**
 - Method: POST
@@ -16,7 +16,7 @@
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| file | File | Yes | The screenshot image file |
+| file | File | Yes | The receipt image file |
 | title | String | Yes | Title or name of the bill |
 | description | String | No | Additional description |
 | userId | String | No | User identifier |
@@ -31,7 +31,7 @@
 ```json
 {
   "success": true,
-  "screenshotId": "550e8400-e29b-41d4-a716-446655440000",
+  "receiptId": "550e8400-e29b-41d4-a716-446655440000",
   "driveFileUrl": "https://drive.google.com/file/d/...",
   "uploadedAt": "2024-01-15T10:30:00"
 }
@@ -47,7 +47,7 @@
 
 **Example using cURL:**
 ```bash
-curl -X POST http://localhost:8080/api/screenshots/upload \
+curl -X POST http://localhost:8080/api/receipts/upload \
   -F "file=@bill.jpg" \
   -F "title=Grocery Shopping" \
   -F "description=Weekly groceries" \
@@ -69,20 +69,20 @@ curl -X POST http://localhost:8080/api/screenshots/upload \
 
 ```graphql
 type Query {
-    screenshot(screenshotId: String!): Screenshot
-    screenshots: [Screenshot!]!
-    screenshotsByUser(userId: String!): [Screenshot!]!
-    screenshotsByCategory(category: String!): [Screenshot!]!
-    screenshotsByUserAndCategory(userId: String!, category: String!): [Screenshot!]!
+    receipt(receiptId: String!): Receipt
+    receipts: [Receipt!]!
+    receiptsByUser(userId: String!): [Receipt!]!
+    receiptsByCategory(category: String!): [Receipt!]!
+    receiptsByUserAndCategory(userId: String!, category: String!): [Receipt!]!
 }
 
 type Mutation {
-    deleteScreenshot(screenshotId: String!): Boolean!
+    deleteReceipt(receiptId: String!): Boolean!
 }
 
-type Screenshot {
+type Receipt {
     id: ID!
-    screenshotId: String!
+    receiptId: String!
     filename: String!
     contentType: String
     fileSize: Float
@@ -101,13 +101,13 @@ type Screenshot {
 
 ### Queries
 
-#### Get All Screenshots
+#### Get All Receipts
 
 ```graphql
 query {
-  screenshots {
+  receipts {
     id
-    screenshotId
+    receiptId
     filename
     driveFileUrl
     uploadedAt
@@ -123,10 +123,10 @@ query {
 ```json
 {
   "data": {
-    "screenshots": [
+    "receipts": [
       {
         "id": "1",
-        "screenshotId": "550e8400-e29b-41d4-a716-446655440000",
+        "receiptId": "550e8400-e29b-41d4-a716-446655440000",
         "filename": "bill.jpg",
         "driveFileUrl": "https://drive.google.com/file/d/...",
         "uploadedAt": "2024-01-15T10:30:00",
@@ -140,12 +140,12 @@ query {
 }
 ```
 
-#### Get Single Screenshot
+#### Get Single Receipt
 
 ```graphql
 query {
-  screenshot(screenshotId: "550e8400-e29b-41d4-a716-446655440000") {
-    screenshotId
+  receipt(receiptId: "550e8400-e29b-41d4-a716-446655440000") {
+    receiptId
     filename
     vendor
     amount
@@ -156,12 +156,12 @@ query {
 }
 ```
 
-#### Get Screenshots by User
+#### Get Receipts by User
 
 ```graphql
 query {
-  screenshotsByUser(userId: "user123") {
-    screenshotId
+  receiptsByUser(userId: "user123") {
+    receiptId
     filename
     vendor
     amount
@@ -171,12 +171,12 @@ query {
 }
 ```
 
-#### Get Screenshots by Category
+#### Get Receipts by Category
 
 ```graphql
 query {
-  screenshotsByCategory(category: "Food") {
-    screenshotId
+  receiptsByCategory(category: "Food") {
+    receiptId
     filename
     vendor
     amount
@@ -185,12 +185,12 @@ query {
 }
 ```
 
-#### Get Screenshots by User and Category
+#### Get Receipts by User and Category
 
 ```graphql
 query {
-  screenshotsByUserAndCategory(userId: "user123", category: "Food") {
-    screenshotId
+  receiptsByUserAndCategory(userId: "user123", category: "Food") {
+    receiptId
     filename
     vendor
     amount
@@ -201,11 +201,11 @@ query {
 
 ### Mutations
 
-#### Delete Screenshot
+#### Delete Receipt
 
 ```graphql
 mutation {
-  deleteScreenshot(screenshotId: "550e8400-e29b-41d4-a716-446655440000")
+  deleteReceipt(receiptId: "550e8400-e29b-41d4-a716-446655440000")
 }
 ```
 
@@ -213,7 +213,7 @@ mutation {
 ```json
 {
   "data": {
-    "deleteScreenshot": true
+    "deleteReceipt": true
   }
 }
 ```
@@ -222,23 +222,23 @@ mutation {
 
 ### Upload Flow
 
-1. Client sends multipart/form-data POST request to `/api/screenshots/upload`
+1. Client sends multipart/form-data POST request to `/api/receipts/upload`
 2. Backend receives the file and metadata
 3. File is uploaded to Google Drive
 4. Reference data (title, description, driveFileId) saved to PostgreSQL
 5. Full metadata saved to MongoDB
-6. Response returned with screenshot ID and Drive URL
+6. Response returned with receipt ID and Drive URL
 
 ### Query Flow
 
 1. Client sends GraphQL query to `/graphql`
-2. GraphQL resolver queries MongoDB for screenshot data
+2. GraphQL resolver queries MongoDB for receipt data
 3. Data returned in requested format
 4. Flutter app can cache data locally in SQLite
 
 ### Delete Flow
 
-1. Client sends GraphQL mutation to delete screenshot
+1. Client sends GraphQL mutation to delete receipt
 2. Backend deletes file from Google Drive
 3. Record deleted from MongoDB
 4. Reference deleted from PostgreSQL
@@ -251,7 +251,7 @@ mutation {
 | 200 | Success |
 | 201 | Created (successful upload) |
 | 400 | Bad Request (invalid parameters) |
-| 404 | Not Found (screenshot doesn't exist) |
+| 404 | Not Found (receipt doesn't exist) |
 | 500 | Internal Server Error |
 
 ## Rate Limiting

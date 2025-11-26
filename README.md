@@ -1,14 +1,14 @@
-# Save My Bills - Screenshot Storage System
+# Save My Bills - Receipt Storage System
 
-A complete solution for managing bill screenshots with cloud storage, consisting of a Java Spring Boot backend with GraphQL API and a Flutter mobile application.
+A complete solution for managing bill receipts with cloud storage, consisting of a Java Spring Boot backend with GraphQL API and a Flutter mobile application.
 
 ## Architecture Overview
 
 ### Backend (Java Spring Boot)
-- **REST API** for screenshot upload
+- **REST API** for receipt upload
 - **GraphQL API** for data querying and mutations
 - **PostgreSQL** for relational data (references and descriptions)
-- **MongoDB** for non-relational data (full screenshot metadata)
+- **MongoDB** for non-relational data (full receipt metadata)
 - **Google Drive API** for cloud file storage
 
 ### Frontend (Flutter)
@@ -27,18 +27,18 @@ save-my-bills/
 │   │   │   ├── java/com/savemybills/
 │   │   │   │   ├── SaveMyBillsApplication.java
 │   │   │   │   ├── model/
-│   │   │   │   │   ├── ScreenshotReference.java (PostgreSQL entity)
-│   │   │   │   │   └── ScreenshotData.java (MongoDB document)
+│   │   │   │   │   ├── ReceiptReference.java (PostgreSQL entity)
+│   │   │   │   │   └── ReceiptData.java (MongoDB document)
 │   │   │   │   ├── repository/
-│   │   │   │   │   ├── ScreenshotReferenceRepository.java
-│   │   │   │   │   └── ScreenshotDataRepository.java
+│   │   │   │   │   ├── ReceiptReferenceRepository.java
+│   │   │   │   │   └── ReceiptDataRepository.java
 │   │   │   │   ├── service/
 │   │   │   │   │   ├── GoogleDriveService.java
-│   │   │   │   │   └── ScreenshotService.java
+│   │   │   │   │   └── ReceiptService.java
 │   │   │   │   ├── controller/
-│   │   │   │   │   └── ScreenshotController.java
+│   │   │   │   │   └── ReceiptController.java
 │   │   │   │   └── graphql/
-│   │   │   │       └── ScreenshotResolver.java
+│   │   │   │       └── ReceiptResolver.java
 │   │   │   └── resources/
 │   │   │       ├── application.yml
 │   │   │       └── graphql/
@@ -50,7 +50,7 @@ save-my-bills/
     ├── lib/
     │   ├── main.dart
     │   ├── models/
-    │   │   └── screenshot.dart
+    │   │   └── receipt.dart
     │   ├── services/
     │   │   ├── graphql_service.dart
     │   │   ├── database_service.dart
@@ -58,7 +58,7 @@ save-my-bills/
     │   └── screens/
     │       ├── home_screen.dart
     │       ├── upload_screen.dart
-    │       └── screenshot_detail_screen.dart
+    │       └── receipt_detail_screen.dart
     └── pubspec.yaml
 ```
 
@@ -120,12 +120,12 @@ The backend will start on `http://localhost:8080`
 ### API Endpoints
 
 #### REST API
-- `POST /api/screenshots/upload` - Upload a screenshot
+- `POST /api/receipts/upload` - Upload a receipt
 
 **Example using cURL:**
 ```bash
-curl -X POST http://localhost:8080/api/screenshots/upload \
-  -F "file=@/path/to/screenshot.jpg" \
+curl -X POST http://localhost:8080/api/receipts/upload \
+  -F "file=@/path/to/receipt.jpg" \
   -F "title=Restaurant Bill" \
   -F "description=Lunch at Italian Restaurant" \
   -F "userId=user123" \
@@ -141,12 +141,12 @@ curl -X POST http://localhost:8080/api/screenshots/upload \
 
 **Example Queries:**
 
-Get all screenshots:
+Get all receipts:
 ```graphql
 query {
-  screenshots {
+  receipts {
     id
-    screenshotId
+    receiptId
     filename
     driveFileUrl
     uploadedAt
@@ -158,11 +158,11 @@ query {
 }
 ```
 
-Get screenshots by user:
+Get receipts by user:
 ```graphql
 query {
-  screenshotsByUser(userId: "user123") {
-    screenshotId
+  receiptsByUser(userId: "user123") {
+    receiptId
     filename
     vendor
     amount
@@ -170,10 +170,10 @@ query {
 }
 ```
 
-Delete a screenshot:
+Delete a receipt:
 ```graphql
 mutation {
-  deleteScreenshot(screenshotId: "abc-123-def")
+  deleteReceipt(receiptId: "abc-123-def")
 }
 ```
 
@@ -200,15 +200,15 @@ flutter pub get
 ```dart
 // For Android emulator
 static const String _apiUrl = 'http://10.0.2.2:8080/graphql';
-static const String baseUrl = 'http://10.0.2.2:8080/api/screenshots';
+static const String baseUrl = 'http://10.0.2.2:8080/api/receipts';
 
 // For iOS simulator
 static const String _apiUrl = 'http://localhost:8080/graphql';
-static const String baseUrl = 'http://localhost:8080/api/screenshots';
+static const String baseUrl = 'http://localhost:8080/api/receipts';
 
 // For physical device (replace with your computer's IP)
 static const String _apiUrl = 'http://192.168.1.X:8080/graphql';
-static const String baseUrl = 'http://192.168.1.X:8080/api/screenshots';
+static const String baseUrl = 'http://192.168.1.X:8080/api/receipts';
 ```
 
 4. Run the app:
@@ -219,7 +219,7 @@ flutter run
 ### Features
 
 #### Home Screen
-- View all screenshots from cloud (GraphQL)
+- View all receipts from cloud (GraphQL)
 - Toggle between cloud and local data
 - Pull to refresh
 - Tap to view details
@@ -238,26 +238,26 @@ flutter run
 - Upload to backend
 
 #### Detail Screen
-- View complete screenshot information
+- View complete receipt information
 - File details
 - Bill information
 - Timestamps
 - Google Drive link
-- Delete screenshot
+- Delete receipt
 
 ### Local Storage
 The app uses SQLite for local storage, enabling:
 - Offline access to previously synced data
-- Fast loading of cached screenshots
+- Fast loading of cached receipts
 - Data persistence across app restarts
 
 ## Data Models
 
 ### PostgreSQL Schema (Relational)
 ```sql
-CREATE TABLE screenshot_references (
+CREATE TABLE receipt_references (
     id BIGSERIAL PRIMARY KEY,
-    screenshot_id VARCHAR(255) NOT NULL UNIQUE,
+    receipt_id VARCHAR(255) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(1000),
     drive_file_id VARCHAR(255) NOT NULL,
@@ -270,7 +270,7 @@ CREATE TABLE screenshot_references (
 ```json
 {
   "_id": "ObjectId",
-  "screenshotId": "string",
+  "receiptId": "string",
   "filename": "string",
   "contentType": "string",
   "fileSize": "number",
@@ -291,9 +291,9 @@ CREATE TABLE screenshot_references (
 
 ### SQLite Schema (Local)
 ```sql
-CREATE TABLE screenshots (
+CREATE TABLE receipts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    screenshotId TEXT NOT NULL UNIQUE,
+    receiptId TEXT NOT NULL UNIQUE,
     filename TEXT NOT NULL,
     contentType TEXT,
     fileSize REAL,
@@ -367,7 +367,7 @@ flutter test
 Create a `Dockerfile` in the backend directory:
 ```dockerfile
 FROM openjdk:17-jdk-slim
-COPY target/screenshot-backend-1.0.0.jar app.jar
+COPY target/receipt-backend-1.0.0.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 

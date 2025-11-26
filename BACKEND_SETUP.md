@@ -130,7 +130,7 @@ mvn spring-boot:run
 
 Or run the JAR directly:
 ```bash
-java -jar target/screenshot-backend-1.0.0.jar
+java -jar target/receipt-backend-1.0.0.jar
 ```
 
 The application will start on **http://localhost:8080**
@@ -153,8 +153,8 @@ The application will start on **http://localhost:8080**
    In GraphiQL, try:
    ```graphql
    query {
-     screenshots {
-       screenshotId
+     receipts {
+       receiptId
        filename
      }
    }
@@ -162,7 +162,7 @@ The application will start on **http://localhost:8080**
 
 4. **Test REST Upload:**
    ```bash
-   curl -X POST http://localhost:8080/api/screenshots/upload \
+   curl -X POST http://localhost:8080/api/receipts/upload \
      -F "file=@test-image.jpg" \
      -F "title=Test Receipt" \
      -F "category=Test"
@@ -275,7 +275,7 @@ google:
 2. Create Dockerfile (already in project):
    ```dockerfile
    FROM openjdk:17-jdk-slim
-   COPY target/screenshot-backend-1.0.0.jar app.jar
+   COPY target/receipt-backend-1.0.0.jar app.jar
    ENTRYPOINT ["java","-jar","/app.jar"]
    ```
 
