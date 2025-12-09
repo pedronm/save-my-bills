@@ -1,0 +1,45 @@
+type Query {
+    receipt(receiptId: String!): Receipt
+    receipts: [Receipt!]!
+    receiptsByUser(userId: String!): [Receipt!]!
+    receiptsByCategory(category: String!): [Receipt!]!
+    receiptsByUserAndCategory(userId: String!, category: String!): [Receipt!]!
+}
+
+type Mutation {
+    deleteReceipt(receiptId: String!): Boolean!
+}
+
+type Receipt {
+    id: ID!
+    receiptId: String!
+    filename: String!
+    contentType: String
+    fileSize: Float
+    driveFileId: String!
+    driveFileUrl: String
+    uploadedAt: String!
+    lastAccessedAt: String
+    userId: String
+    category: String
+    amount: Float
+    currency: String
+    billDate: String
+    vendor: String
+    tags: [Tag!]
+}
+
+type Tag {
+    key: String!
+    value: String!
+}
+
+type ReceiptReference {
+    id: ID!
+    receiptId: String!
+    title: String!
+    description: String
+    driveFileId: String!
+    uploadedAt: String!
+    updatedAt: String
+}
